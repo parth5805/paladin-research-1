@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-09-18T15:07:14.286Z",
+  "privacyGroupId": "0xa54ba3763d8a28bb91e738e54cebba90d22aaa79ac0edf1edf15a47a940e964a",
+  "contractAddress": "0x0d095e0c1312079727ed3ac2276ee9e7aa184d9c",
+  "realLender": {
+    "verifier": "bigbank@node1",
+    "address": "0xc1e5fdd1d13ce121d3255e7dff14dfe2d0f42dae"
+  },
+  "realBorrower": {
+    "verifier": "techstartup@node2",
+    "address": "0xe37c48e0e63c0fa0f364b5dc101b8ebecc728ac7"
+  },
+  "transactions": {
+    "init": "0xc129df02ed4347cf90cd71b5c767c48cdd698daea08d36757649715b01a7a928",
+    "funding": "0x3a07175de6abb11e39d3d718ba41e8e546a86c0e449494db1389f0e18d81422c",
+    "payment": "0x3ed3cf956347b6c46de9a5d291b9286a4e8169d80ed88f69bea44e4ee9148959"
+  },
+  "loanState": {
+    "amount": "1000000",
+    "interestRate": "500",
+    "isFunded": true,
+    "creationTime": "1758208029",
+    "totalPaid": "100000",
+    "initialized": true
+  },
+  "blockchainTime": {
+    "0": "1758208034"
+  },
+  "proof": {
+    "realPrivacyGroup": true,
+    "realContract": true,
+    "realTransactions": true,
+    "realSecurity": true,
+    "realPayments": true
+  }
+}

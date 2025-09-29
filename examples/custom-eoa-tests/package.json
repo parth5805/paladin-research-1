@@ -1,0 +1,32 @@
+{
+  "name": "paladin-eoa-tests",
+  "version": "0.0.1",
+  "description": "Custom EOA tests for Paladin nodes",
+  "main": "build/index.js",
+  "scripts": {
+    "build": "tsc",
+    "scenario1": "ts-node ./src/scenario1-public-across-nodes.ts",
+    "scenario2": "ts-node ./src/scenario2-privacy-groups.ts",
+    "scenario3": "ts-node ./src/scenario3-eoa4-node3.ts",
+    "scenario4": "ts-node ./src/scenario4-cross-node-privacy.ts",
+    "scenario5": "ts-node ./src/scenario5-selective-privacy.ts",
+    "scenario6": "ts-node ./src/scenario6-extensive-privacy-test.ts",
+    "scenario7": "ts-node ./src/scenario7-security-model.ts",
+    "lending-demo": "ts-node ./src/lending-privacy-demo.ts",
+    "test-domains": "ts-node ./src/test-domains.ts",
+    "compile-contracts": "cd ../.. && cd solidity && npm run compile",
+    "copy-abi": "node scripts/copy-storage-abi.mjs"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^22.8.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3",
+    "copy-file": "^11.0.0"
+  },
+  "dependencies": {
+    "@lfdecentralizedtrust-labs/paladin-sdk": "^0.10.0",
+    "ethers": "^6.13.1"
+  }
+}

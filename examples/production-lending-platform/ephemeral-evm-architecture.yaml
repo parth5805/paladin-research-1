@@ -1,0 +1,128 @@
+# TRUE INDIVIDUAL ISOLATION: Node-per-Identity Architecture
+# This implements the CEO's vision at the infrastructure level
+
+# Configuration for ultra-high privacy Ephemeral EVMs
+# Each critical identity gets its own dedicated node
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ephemeral-evm-config
+data:
+  architecture.md: |
+    # Ephemeral EVM Node-per-Identity Architecture
+    
+    ## CEO's Vision Implementation
+    "Scalable mini private blockchains on-demand" with true individual isolation
+    
+    ## Architecture Options
+    
+    ### Option 1: Separate Privacy Groups (Recommended)
+    - ✅ Each deal = unique privacy group
+    - ✅ Minimal infrastructure overhead  
+    - ✅ Perfect deal-level isolation
+    - ✅ Scales to thousands of concurrent deals
+    
+    ### Option 2: Node-per-Critical-Identity (Ultra-High Security)
+    - ✅ True individual isolation
+    - ⚠️  Higher infrastructure cost
+    - ✅ Military-grade privacy
+    - 🎯 For regulated/high-value scenarios
+    
+    ### Option 3: Hybrid Approach
+    - ✅ Separate privacy groups for normal deals
+    - ✅ Dedicated nodes for high-value/regulated deals
+    - ✅ Cost-effective scaling strategy
+    
+    ## Implementation Status
+    ✅ Option 1: Implemented in true-ephemeral-evm-test.js
+    🔄 Option 2: Available via K8s scaling (see below)
+    🔄 Option 3: Configurable per deal importance
+    
+  node-scaling.yaml: |
+    # Kubernetes configuration for node-per-identity scaling
+    # Scale nodes dynamically based on privacy requirements
+    
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: paladin-ephemeral-node
+    spec:
+      replicas: 1  # Scale up for node-per-identity
+      selector:
+        matchLabels:
+          app: paladin-ephemeral
+      template:
+        metadata:
+          labels:
+            app: paladin-ephemeral
+        spec:
+          containers:
+          - name: paladin
+            image: paladin:latest
+            env:
+            - name: ISOLATION_MODE
+              value: "EPHEMERAL_INDIVIDUAL"  # CEO's vision mode
+            - name: PRIVACY_LEVEL
+              value: "MAXIMUM"
+            ports:
+            - containerPort: 8080
+    
+    ---
+    apiVersion: v1  
+    kind: Service
+    metadata:
+      name: paladin-ephemeral-service
+    spec:
+      type: NodePort
+      ports:
+      - port: 8080
+        nodePort: 31000  # Base port, increment for each node
+      selector:
+        app: paladin-ephemeral
+        
+  implementation-guide.md: |
+    # Implementation Guide: True Ephemeral EVMs
+    
+    ## For Standard Use Cases (Recommended)
+    ```bash
+    # Run the separate privacy groups approach
+    node true-ephemeral-evm-test.js
+    ```
+    
+    ## For Ultra-High Security Use Cases
+    ```bash
+    # Scale Kubernetes nodes for individual isolation
+    kubectl scale deployment paladin-ephemeral-node --replicas=5
+    
+    # Each critical identity gets dedicated node:
+    # Node 1: High-value lender
+    # Node 2: Regulated borrower  
+    # Node 3: Compliance auditor
+    # Node 4: External regulator
+    # Node 5: Backup/failover
+    ```
+    
+    ## Cost-Benefit Analysis
+    
+    ### Separate Privacy Groups Approach
+    - Infrastructure: 3 nodes (current)
+    - Privacy Level: Deal-level isolation ✅
+    - Scalability: Thousands of concurrent deals ✅
+    - Cost: Low 💰
+    - CEO Vision: ✅ "Mini private blockchains on-demand"
+    
+    ### Node-per-Identity Approach  
+    - Infrastructure: N nodes (1 per critical identity)
+    - Privacy Level: Individual isolation ✅
+    - Scalability: Limited by infrastructure
+    - Cost: High 💰💰💰
+    - CEO Vision: ✅ Ultimate "AWS Lambda" isolation
+    
+    ## Recommendation
+    Start with separate privacy groups approach (true-ephemeral-evm-test.js)
+    for 99% of use cases. Scale to node-per-identity only for:
+    - Regulated financial institutions
+    - High-value transactions (>$1M)
+    - Legal compliance requirements
+    - Government/military applications

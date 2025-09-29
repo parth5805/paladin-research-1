@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paladin Privacy Groups Playground - Live Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .connection-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .connected {
+            background: #28a745;
+        }
+
+        .disconnected {
+            background: #dc3545;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .left-panel, .right-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .panel-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #4facfe;
+            padding-bottom: 10px;
+        }
+
+        .nodes-section {
+            margin-bottom: 30px;
+        }
+
+        .node-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #4facfe;
+        }
+
+        .node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .node-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .node-status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            color: white;
+            font-size: 0.8em;
+        }
+
+        .node-status.connected {
+            background: #28a745;
+        }
+
+        .node-status.disconnected {
+            background: #dc3545;
+        }
+
+        .eoa-list {
+            margin-bottom: 10px;
+        }
+
+        .eoa-item {
+            background: #e9ecef;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .eoa-address {
+            color: #6c757d;
+            word-break: break-all;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #4facfe;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #3d8bfe;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #c82333;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover:not(:disabled) {
+            background: #e0a800;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .privacy-group-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #28a745;
+        }
+
+        .privacy-group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .group-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .member-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .member-badge {
+            background: #4facfe;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+
+        .interaction-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .interaction-header {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            min-height: 100px;
+            white-space: pre-wrap;
+            font-size: 0.9em;
+        }
+
+        .success-result {
+            border-color: #28a745;
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .error-result {
+            border-color: #dc3545;
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .warning-result {
+            border-color: #ffc107;
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .loading {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .address-display {
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #6c757d;
+            word-break: break-all;
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 2px solid #e9ecef;
+            margin: 20px 0;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Paladin Privacy Groups Playground</h1>
+            <p>Live Interactive Demo - Real Paladin Node Integration</p>
+            <div id="connection-status" class="connection-status disconnected">
+                🔌 Connecting to server...
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Left Panel: Setup -->
+            <div class="left-panel">
+                <h2 class="panel-title">🏗️ Setup & Configuration</h2>
+
+                <!-- Nodes Section -->
+                <div class="nodes-section">
+                    <h3>📡 Paladin Nodes</h3>
+                    <div id="nodes-container">
+                        <div class="loading">Loading nodes...</div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Create EOA in Node:</label>
+                        <div class="grid-2">
+                            <select id="node-select">
+                                <option value="">Select Node</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="createEOA()" id="create-eoa-btn">
+                                + Create EOA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- Privacy Groups Section -->
+                <div class="privacy-groups-section">
+                    <h3>🔐 Privacy Groups</h3>
+                    <div id="privacy-groups-container">
+                        <div class="privacy-group-card">No privacy groups created yet</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Group Name:</label>
+                        <input type="text" id="group-name" placeholder="e.g., Group1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Select Members (Hold Ctrl for multiple):</label>
+                        <select id="member-select" multiple size="5">
+                            <!-- EOAs will be populated here -->
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="createPrivacyGroup()" id="create-group-btn">
+                        🔒 Create Privacy Group
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel: Interaction -->
+            <div class="right-panel">
+                <h2 class="panel-title">🚀 Contract Interaction</h2>
+
+                <div class="interaction-section">
+                    <h3 class="interaction-header">📝 Storage Contract Operations</h3>
+                    
+                    <div class="input-group">
+                        <label>Select Privacy Group:</label>
+                        <select id="interaction-group-select" onchange="updateGroupInfo()">
+                            <option value="">Select Privacy Group</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Select EOA:</label>
+                        <select id="interaction-eoa-select">
+                            <option value="">Select EOA</option>
+                        </select>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <label>Value to Store:</label>
+                            <input type="number" id="store-value" placeholder="e.g., 100">
+                        </div>
+                        <button class="btn btn-warning" onclick="writeContract()" id="write-btn">
+                            ✍️ Write
+                        </button>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="readContract()" id="read-btn">
+                        👁️ Read Value
+                    </button>
+
+                    <div id="result-box" class="result-box">
+                        🎮 Welcome to Paladin Privacy Groups Playground!
+                        
+                        📋 How to use:
+                        1. Create EOAs in different nodes
+                        2. Create privacy groups with selected members
+                        3. Test contract interactions to see privacy isolation
+                        
+                        💡 Expected behavior:
+                        • Authorized EOAs: Can read/write successfully
+                        • Same-node unauthorized EOAs: May succeed (node-level access)
+                        • Different-node EOAs: Should fail (privacy group not found)
+                    </div>
+                </div>
+
+                <div class="interaction-section">
+                    <h3 class="interaction-header">📊 Group Information</h3>
+                    <div id="group-info-box" class="result-box">
+                        Select a privacy group to see its details...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let serverConnected = false;
+        let nodes = [];
+        let eoas = {};
+        let privacyGroups = {};
+        let eoaCounter = 1;
+
+        // API base URL
+        const API_BASE = '';
+
+        // Initialize the playground
+        async function initializePlayground() {
+            try {
+                await checkServerConnection();
+                await loadNodes();
+                updateUI();
+            } catch (error) {
+                console.error('Failed to initialize playground:', error);
+                showConnectionStatus(false);
+            }
+        }
+
+        // Check server connection
+        async function checkServerConnection() {
+            try {
+                const response = await fetch(`${API_BASE}/api/nodes`);
+                if (response.ok) {
+                    serverConnected = true;
+                    showConnectionStatus(true);
+                    return true;
+                }
+            } catch (error) {
+                console.error('Server connection failed:', error);
+            }
+            
+            serverConnected = false;
+            showConnectionStatus(false);
+            return false;
+        }
+
+        // Show connection status
+        function showConnectionStatus(connected) {
+            const statusEl = document.getElementById('connection-status');
+            if (connected) {
+                statusEl.textContent = '✅ Connected to Paladin';
+                statusEl.className = 'connection-status connected';
+            } else {
+                statusEl.textContent = '❌ Server Offline';
+                statusEl.className = 'connection-status disconnected';
+            }
+        }
+
+        // Load nodes from server
+        async function loadNodes() {
+            try {
+                const response = await fetch(`${API_BASE}/api/nodes`);
+                nodes = await response.json();
+                renderNodes();
+                populateNodeSelect();
+            } catch (error) {
+                console.error('Failed to load nodes:', error);
+                nodes = [];
+            }
+        }
+
+        // Render nodes
+        function renderNodes() {
+            const container = document.getElementById('nodes-container');
+            container.innerHTML = '';
+
+            if (nodes.length === 0) {
+                container.innerHTML = '<div class="loading">Failed to load nodes</div>';
+                return;
+            }
+
+            nodes.forEach(node => {
+                const nodeEOAs = Object.values(eoas).filter(eoa => eoa.nodeId === node.id);
+                
+                const nodeCard = document.createElement('div');
+                nodeCard.className = 'node-card';
+                nodeCard.innerHTML = `
+                    <div class="node-header">
+                        <span class="node-name">${node.name}</span>
+                        <span class="node-status ${node.status}">${node.status}</span>
+                    </div>
+                    <div class="address-display">${node.url}</div>
+                    <div class="eoa-list">
+                        ${nodeEOAs.map(eoa => `
+                            <div class="eoa-item">
+                                <span><strong>${eoa.name}</strong></span>
+                                <span class="eoa-address">${eoa.address}</span>
+                            </div>
+                        `).join('')}
+                        ${nodeEOAs.length === 0 ? '<div class="eoa-item">No EOAs created yet</div>' : ''}
+                    </div>
+                `;
+                container.appendChild(nodeCard);
+            });
+        }
+
+        // Populate node select dropdown
+        function populateNodeSelect() {
+            const select = document.getElementById('node-select');
+            select.innerHTML = '<option value="">Select Node</option>';
+            
+            nodes.forEach(node => {
+                if (node.status === 'connected') {
+                    const option = document.createElement('option');
+                    option.value = node.id;
+                    option.textContent = node.name;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        // Create EOA
+        async function createEOA() {
+            const nodeId = document.getElementById('node-select').value;
+            if (!nodeId) {
+                alert('Please select a node first');
+                return;
+            }
+
+            const eoaName = `EOA${eoaCounter}`;
+            const btn = document.getElementById('create-eoa-btn');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Creating...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/eoa`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nodeId, eoaName })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const walletKey = `${nodeId}:${eoaName}`;
+                    eoas[walletKey] = {
+                        ...result.eoa,
+                        key: walletKey
+                    };
+                    
+                    eoaCounter++;
+                    renderNodes();
+                    updateMemberSelect();
+                    updateEOASelect();
+                    
+                    showResult(`✅ Created ${eoaName} on ${nodes.find(n => n.id === nodeId).name}\nAddress: ${result.eoa.address}\nIdentity: ${result.eoa.identity}`, 'success');
+                } else {
+                    showResult(`❌ Failed to create EOA: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Error creating EOA: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '+ Create EOA';
+            }
+        }
+
+        // Update member select for privacy group creation
+        function updateMemberSelect() {
+            const select = document.getElementById('member-select');
+            select.innerHTML = '';
+
+            Object.values(eoas).forEach(eoa => {
+                const node = nodes.find(n => n.id === eoa.nodeId);
+                const option = document.createElement('option');
+                option.value = eoa.key;
+                option.textContent = `${eoa.name} (${node.name})`;
+                select.appendChild(option);
+            });
+        }
+
+        // Create privacy group
+        async function createPrivacyGroup() {
+            const groupName = document.getElementById('group-name').value.trim();
+            const selectedMembers = Array.from(document.getElementById('member-select').selectedOptions)
+                .map(option => option.value);
+
+            if (!groupName) {
+                alert('Please enter a group name');
+                return;
+            }
+
+            if (selectedMembers.length === 0) {
+                alert('Please select at least one member');
+                return;
+            }
+
+            if (privacyGroups[groupName]) {
+                alert('Group name already exists');
+                return;
+            }
+
+            const btn = document.getElementById('create-group-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Creating...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/privacy-group`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ groupName, members: selectedMembers })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    privacyGroups[groupName] = result.group;
+                    
+                    renderPrivacyGroups();
+                    updateGroupSelects();
+                    
+                    // Clear form
+                    document.getElementById('group-name').value = '';
+                    document.getElementById('member-select').selectedIndex = -1;
+
+                    showResult(`✅ Created Privacy Group: ${groupName}\nMembers: ${selectedMembers.map(m => eoas[m].name).join(', ')}\nGroup Address: ${result.group.address}\nContract Address: ${result.group.contractAddress}`, 'success');
+                } else {
+                    showResult(`❌ Failed to create privacy group: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showResult(`❌ Error creating privacy group: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🔒 Create Privacy Group';
+            }
+        }
+
+        // Render privacy groups
+        function renderPrivacyGroups() {
+            const container = document.getElementById('privacy-groups-container');
+            container.innerHTML = '';
+
+            const groupKeys = Object.keys(privacyGroups);
+            if (groupKeys.length === 0) {
+                container.innerHTML = '<div class="privacy-group-card">No privacy groups created yet</div>';
+                return;
+            }
+
+            groupKeys.forEach(groupName => {
+                const group = privacyGroups[groupName];
+                const groupCard = document.createElement('div');
+                groupCard.className = 'privacy-group-card';
+                groupCard.innerHTML = `
+                    <div class="privacy-group-header">
+                        <span class="group-name">${group.name}</span>
+                    </div>
+                    <div class="member-badges">
+                        ${group.members.map(memberKey => {
+                            const eoa = eoas[memberKey];
+                            return `<span class="member-badge">${eoa.name}</span>`;
+                        }).join('')}
+                    </div>
+                    <div class="address-display">Contract: ${group.contractAddress}</div>
+                `;
+                container.appendChild(groupCard);
+            });
+        }
+
+        // Update group selects
+        function updateGroupSelects() {
+            const select = document.getElementById('interaction-group-select');
+            select.innerHTML = '<option value="">Select Privacy Group</option>';
+
+            Object.keys(privacyGroups).forEach(groupName => {
+                const option = document.createElement('option');
+                option.value = groupName;
+                option.textContent = groupName;
+                select.appendChild(option);
+            });
+        }
+
+        // Update EOA select
+        function updateEOASelect() {
+            const select = document.getElementById('interaction-eoa-select');
+            select.innerHTML = '<option value="">Select EOA</option>';
+
+            Object.values(eoas).forEach(eoa => {
+                const node = nodes.find(n => n.id === eoa.nodeId);
+                const option = document.createElement('option');
+                option.value = eoa.key;
+                option.textContent = `${eoa.name} (${node.name})`;
+                select.appendChild(option);
+            });
+        }
+
+        // Update group information display
+        async function updateGroupInfo() {
+            const groupName = document.getElementById('interaction-group-select').value;
+            const infoBox = document.getElementById('group-info-box');
+            
+            if (!groupName) {
+                infoBox.textContent = 'Select a privacy group to see its details...';
+                infoBox.className = 'result-box';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/privacy-group/${groupName}`);
+                const group = await response.json();
+
+                if (response.ok) {
+                    const memberDetails = group.members.map(member => 
+                        `• ${member.name} (${nodes.find(n => n.id === member.nodeId).name}): ${member.address}`
+                    ).join('\n');
+
+                    infoBox.innerHTML = `<strong>📊 Group: ${group.name}</strong>
+<strong>🏗️ Group Address:</strong> ${group.address}
+<strong>📝 Contract Address:</strong> ${group.contractAddress}
+<strong>🆔 Group ID:</strong> ${group.groupId}
+<strong>👥 Members (${group.members.length}):</strong>
+${memberDetails}`;
+                    infoBox.className = 'result-box success-result';
+                } else {
+                    infoBox.textContent = `Error loading group info: ${group.error}`;
+                    infoBox.className = 'result-box error-result';
+                }
+            } catch (error) {
+                infoBox.textContent = `Error loading group info: ${error.message}`;
+                infoBox.className = 'result-box error-result';
+            }
+        }
+
+        // Write to contract
+        async function writeContract() {
+            const groupName = document.getElementById('interaction-group-select').value;
+            const eoaKey = document.getElementById('interaction-eoa-select').value;
+            const storeValue = document.getElementById('store-value').value;
+
+            if (!groupName || !eoaKey || !storeValue) {
+                alert('Please select privacy group, EOA, and enter a value to store');
+                return;
+            }
+
+            const btn = document.getElementById('write-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Writing...';
+
+            showResult('📤 Writing to contract...', 'loading');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/contract/write`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        groupName, 
+                        walletKey: eoaKey, 
+                        value: storeValue 
+                    })
+                });
+
+                const result = await response.json();
+                const eoa = eoas[eoaKey];
+                const node = nodes.find(n => n.id === eoa.nodeId);
+
+                let resultText;
+                let resultClass;
+
+                if (result.success) {
+                    if (result.isMember) {
+                        resultText = `✅ WRITE SUCCESS (${eoa.name})
+📝 Stored value: ${storeValue}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+✨ Status: AUTHORIZED MEMBER`;
+                        resultClass = 'success';
+                    } else {
+                        resultText = `⚠️ WRITE SUCCESS (${eoa.name}) - NODE LEVEL ACCESS
+📝 Stored value: ${storeValue}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+⚠️ Status: NOT A MEMBER but same node access granted
+💡 This shows Paladin's node-level privacy behavior`;
+                        resultClass = 'warning';
+                    }
+                } else {
+                    if (result.isMember) {
+                        resultText = `❌ WRITE FAILED (${eoa.name}) - UNEXPECTED
+🚫 Error: ${result.error}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+❌ Status: MEMBER but transaction failed`;
+                        resultClass = 'error';
+                    } else {
+                        resultText = `❌ WRITE FAILED (${eoa.name})
+🚫 Error: ${result.error}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+❌ Status: BLOCKED - Not authorized
+✅ This is expected behavior`;
+                        resultClass = 'success';
+                    }
+                }
+
+                showResult(resultText, resultClass);
+
+            } catch (error) {
+                showResult(`❌ Error writing to contract: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '✍️ Write';
+            }
+        }
+
+        // Read from contract
+        async function readContract() {
+            const groupName = document.getElementById('interaction-group-select').value;
+            const eoaKey = document.getElementById('interaction-eoa-select').value;
+
+            if (!groupName || !eoaKey) {
+                alert('Please select privacy group and EOA');
+                return;
+            }
+
+            const btn = document.getElementById('read-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Reading...';
+
+            showResult('👁️ Reading from contract...', 'loading');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/contract/read`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        groupName, 
+                        walletKey: eoaKey
+                    })
+                });
+
+                const result = await response.json();
+                const eoa = eoas[eoaKey];
+                const node = nodes.find(n => n.id === eoa.nodeId);
+
+                let resultText;
+                let resultClass;
+
+                if (result.success) {
+                    if (result.isMember) {
+                        resultText = `✅ READ SUCCESS (${eoa.name})
+📖 Current value: ${result.value}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+✨ Status: AUTHORIZED MEMBER`;
+                        resultClass = 'success';
+                    } else {
+                        resultText = `⚠️ READ SUCCESS (${eoa.name}) - NODE LEVEL ACCESS
+📖 Current value: ${result.value}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+⚠️ Status: NOT A MEMBER but same node access granted
+💡 This shows Paladin's node-level privacy behavior`;
+                        resultClass = 'warning';
+                    }
+                } else {
+                    if (result.isMember) {
+                        resultText = `❌ READ FAILED (${eoa.name}) - UNEXPECTED
+🚫 Error: ${result.error}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+❌ Status: MEMBER but read failed`;
+                        resultClass = 'error';
+                    } else {
+                        resultText = `❌ READ FAILED (${eoa.name})
+🚫 Error: ${result.error}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+❌ Status: BLOCKED - Not authorized
+✅ This is expected behavior`;
+                        resultClass = 'success';
+                    }
+                }
+
+                showResult(resultText, resultClass);
+
+            } catch (error) {
+                showResult(`❌ Error reading from contract: ${error.message}`, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '👁️ Read Value';
+            }
+        }
+
+        // Show result in the result box
+        function showResult(message, type) {
+            const resultBox = document.getElementById('result-box');
+            resultBox.textContent = message;
+            
+            resultBox.className = 'result-box';
+            if (type === 'success') {
+                resultBox.className += ' success-result';
+            } else if (type === 'error') {
+                resultBox.className += ' error-result';
+            } else if (type === 'warning') {
+                resultBox.className += ' warning-result';
+            } else if (type === 'loading') {
+                resultBox.className += ' loading';
+            }
+        }
+
+        // Update UI components
+        function updateUI() {
+            updateMemberSelect();
+            updateEOASelect();
+            updateGroupSelects();
+        }
+
+        // Initialize playground on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializePlayground();
+            
+            // Periodically check connection
+            setInterval(checkServerConnection, 30000);
+        });
+    </script>
+</body>
+</html>

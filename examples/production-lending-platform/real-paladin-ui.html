@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Paladin Individual Identity Testing UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #161b22;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+        }
+
+        .header h1 {
+            color: #58a6ff;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #8b949e;
+            font-size: 1.1em;
+        }
+
+        .section {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section h3 {
+            color: #f0f6fc;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 10px;
+        }
+
+        .nodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .node-card {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .node-card h4 {
+            color: #58a6ff;
+            margin-bottom: 10px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-connected { background: #238636; }
+        .status-disconnected { background: #da3633; }
+
+        .eoa-list {
+            margin-top: 10px;
+        }
+
+        .eoa-item {
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .eoa-identity {
+            color: #f85149;
+            font-weight: bold;
+        }
+
+        .eoa-address {
+            color: #79c0ff;
+            font-family: monospace;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        .groups-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .group-card {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .group-header {
+            color: #a5f3fc;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .group-info {
+            margin-bottom: 15px;
+        }
+
+        .group-address {
+            color: #79c0ff;
+            font-family: monospace;
+            font-size: 0.85em;
+            margin: 5px 0;
+            word-break: break-all;
+        }
+
+        .test-results {
+            margin-top: 15px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .results-table th {
+            background: #21262d;
+            color: #f0f6fc;
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #30363d;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .results-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #30363d;
+            font-family: monospace;
+            font-size: 0.85em;
+        }
+
+        .results-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .result-true {
+            color: #238636;
+            font-weight: bold;
+        }
+
+        .result-false {
+            color: #da3633;
+            font-weight: bold;
+        }
+
+        .result-success {
+            color: #238636;
+            font-weight: bold;
+        }
+
+        .result-blocked {
+            color: #f85149;
+            font-weight: bold;
+        }
+
+        .eoa-name {
+            color: #58a6ff;
+            font-weight: bold;
+        }
+
+        .test-item {
+            background: #21262d;
+            border-left: 4px solid #30363d;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .test-success {
+            border-left-color: #238636;
+            background: rgba(35, 134, 54, 0.1);
+        }
+
+        .test-warning {
+            border-left-color: #d29922;
+            background: rgba(210, 153, 34, 0.1);
+        }
+
+        .test-error {
+            border-left-color: #da3633;
+            background: rgba(218, 54, 51, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #2ea043;
+        }
+
+        button:disabled {
+            background: #6e7681;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #21262d;
+            border: 1px solid #30363d;
+        }
+
+        .btn-secondary:hover {
+            background: #30363d;
+        }
+
+        .log-output {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 0.9em;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #30363d;
+            border-top: 2px solid #58a6ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Real Paladin Individual Identity Testing UI</h1>
+            <p>Same functionality as infrastructure-solution-individual-fixed_SIMPLIFIED.js but with UI</p>
+            <p>Real SDK connections • Real privacy groups • Real transactions</p>
+        </div>
+
+        <div class="controls">
+            <button id="initializeBtn" onclick="initializePaladin()">🚀 Initialize Paladin</button>
+            <button id="createGroupsBtn" onclick="createGroups()" disabled>🏗️ Create Privacy Groups</button>
+            <button id="runTestsBtn" onclick="runAllTests()" disabled>📝 Run All Tests</button>
+            <button class="btn-secondary" onclick="clearLog()">🗑️ Clear Log</button>
+        </div>
+
+        <div class="section">
+            <h3>📊 Real-time Log Output</h3>
+            <div id="logOutput" class="log-output">Ready to connect to real Paladin nodes...\n</div>
+        </div>
+
+        <div class="section">
+            <h3>🔗 Paladin Nodes Status</h3>
+            <div id="nodesStatus" class="nodes-grid">
+                <div class="node-card">
+                    <h4><span class="status-indicator status-disconnected"></span>Node 1 (localhost:31548)</h4>
+                    <div>Status: Not connected</div>
+                    <div class="eoa-list" id="node1-eoas"></div>
+                </div>
+                <div class="node-card">
+                    <h4><span class="status-indicator status-disconnected"></span>Node 2 (localhost:31648)</h4>
+                    <div>Status: Not connected</div>
+                    <div class="eoa-list" id="node2-eoas"></div>
+                </div>
+                <div class="node-card">
+                    <h4><span class="status-indicator status-disconnected"></span>Node 3 (localhost:31748)</h4>
+                    <div>Status: Not connected</div>
+                    <div class="eoa-list" id="node3-eoas"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🔐 Privacy Groups & Test Results</h3>
+            <div id="groupsSection" class="groups-section">
+                <div class="group-card">
+                    <div class="group-header">GROUP1 (EOA1, EOA3)</div>
+                    <div class="group-info">
+                        <div>Status: Not created</div>
+                        <div class="group-address" id="group1-address"></div>
+                        <div class="group-address" id="group1-contract"></div>
+                    </div>
+                    <div class="test-results" id="group1-tests"></div>
+                </div>
+                <div class="group-card">
+                    <div class="group-header">GROUP2 (EOA1, EOA4)</div>
+                    <div class="group-info">
+                        <div>Status: Not created</div>
+                        <div class="group-address" id="group2-address"></div>
+                        <div class="group-address" id="group2-contract"></div>
+                    </div>
+                    <div class="test-results" id="group2-tests"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration for real backend
+        const API_BASE = 'http://localhost:3002';
+        
+        // Global state - exact same as your SimplifiedDemo class
+        let clients = [];
+        let wallets = {};
+        let groups = {};
+        let contracts = {};
+
+        const NODES = [
+            { name: "Node 1", url: "http://localhost:31548" },
+            { name: "Node 2", url: "http://localhost:31648" },
+            { name: "Node 3", url: "http://localhost:31748" }
+        ];
+
+        function log(message) {
+            const logOutput = document.getElementById('logOutput');
+            logOutput.textContent += message + '\n';
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('logOutput').textContent = 'Log cleared.\n';
+        }
+
+        function updateNodeStatus(nodeIndex, connected, eoas = []) {
+            const nodeCard = document.querySelectorAll('.node-card')[nodeIndex];
+            const indicator = nodeCard.querySelector('.status-indicator');
+            const statusText = nodeCard.querySelector('div');
+            const eoaList = nodeCard.querySelector('.eoa-list');
+
+            if (connected) {
+                indicator.className = 'status-indicator status-connected';
+                statusText.textContent = 'Status: Connected ✅';
+            } else {
+                indicator.className = 'status-indicator status-disconnected';
+                statusText.textContent = 'Status: Disconnected ❌';
+            }
+
+            // Update EOAs
+            eoaList.innerHTML = '';
+            eoas.forEach(eoa => {
+                const eoaDiv = document.createElement('div');
+                eoaDiv.className = 'eoa-item';
+                eoaDiv.innerHTML = `
+                    <div class="eoa-identity">${eoa[0]}: ${eoa[1].identity}</div>
+                    <div class="eoa-address">${eoa[1].address}</div>
+                `;
+                eoaList.appendChild(eoaDiv);
+            });
+        }
+
+        function updateGroupInfo(groupName, address, contractAddress) {
+            const groupIndex = groupName === 'GROUP1' ? 0 : 1;
+            document.getElementById(`group${groupIndex + 1}-address`).textContent = `Group: ${address}`;
+            document.getElementById(`group${groupIndex + 1}-contract`).textContent = `Contract: ${contractAddress}`;
+        }
+
+        function addTestResult(groupName, eoaName, writeExpected, writeActual, readExpected, readActual, writeMessage, readMessage) {
+            const groupIndex = groupName === 'GROUP1' ? 0 : 1;
+            const testsDiv = document.getElementById(`group${groupIndex + 1}-tests`);
+            
+            // Create or find table
+            let table = testsDiv.querySelector('.results-table');
+            if (!table) {
+                table = document.createElement('table');
+                table.className = 'results-table';
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>EOA</th>
+                            <th>Write Expected</th>
+                            <th>Write Actual</th>
+                            <th>Read Expected</th>
+                            <th>Read Actual</th>
+                            <th>Privacy Working?</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                `;
+                testsDiv.appendChild(table);
+            }
+            
+            const tbody = table.querySelector('tbody');
+            const writeOk = writeExpected === writeActual;
+            const readOk = readExpected === readActual;
+            const privacyWorking = writeOk && readOk;
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="eoa-name">${eoaName}</td>
+                <td class="${writeExpected === 'SUCCESS' ? 'result-success' : 'result-blocked'}">${writeExpected}</td>
+                <td class="${writeActual === 'SUCCESS' ? 'result-success' : 'result-blocked'}" title="${writeMessage}">${writeActual}</td>
+                <td class="${readExpected === 'SUCCESS' ? 'result-success' : 'result-blocked'}">${readExpected}</td>
+                <td class="${readActual === 'SUCCESS' ? 'result-success' : 'result-blocked'}" title="${readMessage}">${readActual}</td>
+                <td class="${privacyWorking ? 'result-true' : 'result-false'}">${privacyWorking ? 'YES' : 'NO'}</td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        // REAL Paladin initialization - connects to your backend that uses real SDK
+        async function initializePaladin() {
+            const btn = document.getElementById('initializeBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>Initializing...';
+
+            try {
+                log("🚀 Connecting to REAL Paladin backend...");
+                log("This will make REAL SDK calls to your Paladin nodes!");
+
+                const response = await fetch(`${API_BASE}/api/initialize`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    log("✅ REAL Paladin SDK initialization successful!");
+                    log("===============================================");
+                    
+                    // Update wallets with REAL data
+                    wallets = data.wallets;
+                    
+                    // Log REAL wallet addresses
+                    log("\n🔐 REAL Wallets created with REAL addresses:");
+                    Object.entries(data.wallets).forEach(([name, wallet]) => {
+                        log(`   ${name}: ${wallet.identity} -> ${wallet.address}`);
+                    });
+
+                    // Update UI with REAL node data
+                    data.nodes.forEach((node, index) => {
+                        updateNodeStatus(index, node.connected, node.eoas);
+                    });
+
+                    log("\n✅ Ready to create REAL privacy groups!");
+                    document.getElementById('createGroupsBtn').disabled = false;
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+
+            } catch (error) {
+                log(`❌ REAL Paladin initialization failed: ${error.message}`);
+                log("💡 Make sure your Paladin nodes are running on ports 31548, 31648, 31748");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🚀 Initialize Paladin';
+            }
+        }
+
+        // Create REAL privacy groups using REAL SDK
+        async function createGroups() {
+            const btn = document.getElementById('createGroupsBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>Creating Groups...';
+
+            try {
+                log("\n🏗️ Creating REAL privacy groups with REAL Paladin SDK...");
+
+                const response = await fetch(`${API_BASE}/api/create-groups`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    log("✅ REAL privacy groups created!");
+                    
+                    // Update UI with REAL group data
+                    Object.entries(data.groups).forEach(([groupName, group]) => {
+                        log(`✅ ${groupName}: ${group.address}`);
+                        log(`   Contract: ${group.contractAddress}`);
+                        log(`   Members: ${group.members.join(', ')}`);
+                        
+                        updateGroupInfo(groupName, group.address, group.contractAddress);
+                        groups[groupName] = group;
+                    });
+
+                    log("\n✅ Ready to run REAL contract tests!");
+                    document.getElementById('runTestsBtn').disabled = false;
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+
+            } catch (error) {
+                log(`❌ REAL group creation failed: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🏗️ Create Privacy Groups';
+            }
+        }
+
+        // Run REAL tests using REAL SDK calls
+        async function runAllTests() {
+            const btn = document.getElementById('runTestsBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>Running Tests...';
+
+            try {
+                // Clear previous test results
+                document.getElementById('group1-tests').innerHTML = '';
+                document.getElementById('group2-tests').innerHTML = '';
+
+                log("\n📝 Running REAL contract interaction tests...");
+                log("This will make REAL SDK calls to test privacy isolation!");
+
+                const response = await fetch(`${API_BASE}/api/run-all-tests`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    log("✅ REAL tests completed!");
+                    log("========================");
+                    
+                    // Display REAL test results - CORRECTED LOGIC
+                    data.testResults.forEach(result => {
+                        // Show if the OPERATION ACTUALLY SUCCEEDED (not what we expected)
+                        const writeActuallySucceeded = result.write.message.includes("SUCCESS");
+                        const readActuallySucceeded = result.read.message.includes("SUCCESS");
+                        
+                        // Show what SHOULD have happened vs what ACTUALLY happened
+                        const writeExpected = result.isAuthorized ? "SUCCESS" : "BLOCKED";
+                        const readExpected = result.isAuthorized ? "SUCCESS" : "BLOCKED"; 
+                        const writeActual = writeActuallySucceeded ? "SUCCESS" : "BLOCKED";
+                        const readActual = readActuallySucceeded ? "SUCCESS" : "BLOCKED";
+                        
+                        addTestResult(
+                            result.group, 
+                            result.wallet, 
+                            writeExpected,
+                            writeActual,
+                            readExpected, 
+                            readActual,
+                            result.write.message, 
+                            result.read.message
+                        );
+                        
+                        log(`${result.wallet} on ${result.group}: ${result.write.message}`);
+                        log(`${result.wallet} on ${result.group}: ${result.read.message}`);
+                    });
+
+                    // Show REAL analysis
+                    log("\n🎯 REAL ANALYSIS RESULTS:");
+                    log("=========================");
+                    log(`🔍 Node-level isolation: ${data.analysis.nodeLevelIsolation}`);
+                    log(`🔍 Individual isolation: ${data.analysis.individualIsolation}`);
+                    log(`🎯 Conclusion: ${data.analysis.conclusion}`);
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+
+            } catch (error) {
+                log(`❌ REAL tests failed: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '📝 Run All Tests';
+            }
+        }
+
+        // Auto-scroll log
+        setInterval(() => {
+            const logOutput = document.getElementById('logOutput');
+            if (logOutput.scrollTop < logOutput.scrollHeight - logOutput.clientHeight - 10) {
+                // User has scrolled up, don't auto-scroll
+                return;
+            }
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }, 100);
+    </script>
+</body>
+</html>

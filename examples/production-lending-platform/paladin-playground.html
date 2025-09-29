@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paladin Privacy Groups Playground</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .left-panel, .right-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .panel-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #4facfe;
+            padding-bottom: 10px;
+        }
+
+        .nodes-section {
+            margin-bottom: 30px;
+        }
+
+        .node-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #4facfe;
+        }
+
+        .node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .node-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .node-status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            background: #28a745;
+            color: white;
+            font-size: 0.8em;
+        }
+
+        .eoa-list {
+            margin-bottom: 10px;
+        }
+
+        .eoa-item {
+            background: #e9ecef;
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .eoa-address {
+            color: #6c757d;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #4facfe;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3d8bfe;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .privacy-group-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid #28a745;
+        }
+
+        .privacy-group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .group-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .member-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .member-badge {
+            background: #4facfe;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+
+        .interaction-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .interaction-header {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .result-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+
+        .success-result {
+            border-color: #28a745;
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .error-result {
+            border-color: #dc3545;
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .loading {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .address-display {
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #6c757d;
+            word-break: break-all;
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 2px solid #e9ecef;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Paladin Privacy Groups Playground</h1>
+            <p>Interactive demo for understanding node-level vs individual-level privacy isolation</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Left Panel: Setup -->
+            <div class="left-panel">
+                <h2 class="panel-title">🏗️ Setup & Configuration</h2>
+
+                <!-- Nodes Section -->
+                <div class="nodes-section">
+                    <h3>📡 Paladin Nodes</h3>
+                    <div id="nodes-container">
+                        <!-- Nodes will be populated here -->
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Create EOA in Node:</label>
+                        <div class="grid-2">
+                            <select id="node-select">
+                                <option value="">Select Node</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="createEOA()">+ Create EOA</button>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="section-divider">
+
+                <!-- Privacy Groups Section -->
+                <div class="privacy-groups-section">
+                    <h3>🔐 Privacy Groups</h3>
+                    <div id="privacy-groups-container">
+                        <!-- Privacy groups will be populated here -->
+                    </div>
+
+                    <div class="input-group">
+                        <label>Group Name:</label>
+                        <input type="text" id="group-name" placeholder="e.g., Group1">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Select Members (Hold Ctrl for multiple):</label>
+                        <select id="member-select" multiple size="5">
+                            <!-- EOAs will be populated here -->
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="createPrivacyGroup()">🔒 Create Privacy Group</button>
+                </div>
+            </div>
+
+            <!-- Right Panel: Interaction -->
+            <div class="right-panel">
+                <h2 class="panel-title">🚀 Contract Interaction</h2>
+
+                <div class="interaction-section">
+                    <h3 class="interaction-header">📝 Storage Contract Operations</h3>
+                    
+                    <div class="input-group">
+                        <label>Select Privacy Group:</label>
+                        <select id="interaction-group-select">
+                            <option value="">Select Privacy Group</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Select EOA:</label>
+                        <select id="interaction-eoa-select">
+                            <option value="">Select EOA</option>
+                        </select>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="input-group">
+                            <label>Value to Store:</label>
+                            <input type="number" id="store-value" placeholder="e.g., 100">
+                        </div>
+                        <button class="btn btn-warning" onclick="writeContract()">✍️ Write</button>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="readContract()">👁️ Read Value</button>
+
+                    <div id="result-box" class="result-box">
+                        Select a privacy group and EOA to start interacting with the storage contract.
+                        
+                        Expected behavior:
+                        • Authorized EOAs: Can read/write successfully
+                        • Same-node unauthorized EOAs: May succeed (node-level access)
+                        • Different-node EOAs: Should fail (privacy group not found)
+                    </div>
+                </div>
+
+                <div class="interaction-section">
+                    <h3 class="interaction-header">📊 Group Information</h3>
+                    <div id="group-info-box" class="result-box">
+                        Select a privacy group to see its details...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let nodes = [
+            { id: 'node1', name: 'Node 1', url: 'http://localhost:31548', status: 'connected', eoas: [] },
+            { id: 'node2', name: 'Node 2', url: 'http://localhost:31648', status: 'connected', eoas: [] },
+            { id: 'node3', name: 'Node 3', url: 'http://localhost:31748', status: 'connected', eoas: [] }
+        ];
+
+        let privacyGroups = [];
+        let eoaCounter = 1;
+
+        // Initialize the playground
+        function initializePlayground() {
+            renderNodes();
+            populateNodeSelect();
+            updateMemberSelect();
+            updateGroupSelects();
+        }
+
+        // Render nodes
+        function renderNodes() {
+            const container = document.getElementById('nodes-container');
+            container.innerHTML = '';
+
+            nodes.forEach(node => {
+                const nodeCard = document.createElement('div');
+                nodeCard.className = 'node-card';
+                nodeCard.innerHTML = `
+                    <div class="node-header">
+                        <span class="node-name">${node.name}</span>
+                        <span class="node-status">${node.status}</span>
+                    </div>
+                    <div class="address-display">${node.url}</div>
+                    <div class="eoa-list">
+                        ${node.eoas.map(eoa => `
+                            <div class="eoa-item">
+                                <span>${eoa.name}</span>
+                                <span class="eoa-address">${eoa.address}</span>
+                            </div>
+                        `).join('')}
+                        ${node.eoas.length === 0 ? '<div class="eoa-item">No EOAs created yet</div>' : ''}
+                    </div>
+                `;
+                container.appendChild(nodeCard);
+            });
+        }
+
+        // Populate node select dropdown
+        function populateNodeSelect() {
+            const select = document.getElementById('node-select');
+            select.innerHTML = '<option value="">Select Node</option>';
+            
+            nodes.forEach(node => {
+                const option = document.createElement('option');
+                option.value = node.id;
+                option.textContent = node.name;
+                select.appendChild(option);
+            });
+        }
+
+        // Create EOA
+        function createEOA() {
+            const nodeId = document.getElementById('node-select').value;
+            if (!nodeId) {
+                alert('Please select a node first');
+                return;
+            }
+
+            const node = nodes.find(n => n.id === nodeId);
+            const eoaName = `EOA${eoaCounter}`;
+            const eoaAddress = `0x${Math.random().toString(16).substr(2, 40)}`;
+            
+            const newEOA = {
+                name: eoaName,
+                address: eoaAddress,
+                nodeId: nodeId,
+                identity: `individual_${eoaName.toLowerCase()}_unique@${nodeId}`
+            };
+
+            node.eoas.push(newEOA);
+            eoaCounter++;
+
+            renderNodes();
+            updateMemberSelect();
+            updateEOASelect();
+            
+            showResult(`✅ Created ${eoaName} on ${node.name}\nAddress: ${eoaAddress}\nIdentity: ${newEOA.identity}`, 'success');
+        }
+
+        // Update member select for privacy group creation
+        function updateMemberSelect() {
+            const select = document.getElementById('member-select');
+            select.innerHTML = '';
+
+            nodes.forEach(node => {
+                node.eoas.forEach(eoa => {
+                    const option = document.createElement('option');
+                    option.value = `${eoa.nodeId}:${eoa.name}`;
+                    option.textContent = `${eoa.name} (${node.name})`;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // Create privacy group
+        function createPrivacyGroup() {
+            const groupName = document.getElementById('group-name').value.trim();
+            const selectedMembers = Array.from(document.getElementById('member-select').selectedOptions)
+                .map(option => option.value);
+
+            if (!groupName) {
+                alert('Please enter a group name');
+                return;
+            }
+
+            if (selectedMembers.length === 0) {
+                alert('Please select at least one member');
+                return;
+            }
+
+            // Check if group name already exists
+            if (privacyGroups.find(g => g.name === groupName)) {
+                alert('Group name already exists');
+                return;
+            }
+
+            const groupAddress = `0x${Math.random().toString(16).substr(2, 40)}`;
+            const contractAddress = `0x${Math.random().toString(16).substr(2, 40)}`;
+            const groupId = `0x${Math.random().toString(16).substr(2, 64)}`;
+
+            const newGroup = {
+                name: groupName,
+                members: selectedMembers,
+                address: groupAddress,
+                contractAddress: contractAddress,
+                groupId: groupId,
+                created: new Date()
+            };
+
+            privacyGroups.push(newGroup);
+            
+            renderPrivacyGroups();
+            updateGroupSelects();
+            
+            // Clear form
+            document.getElementById('group-name').value = '';
+            document.getElementById('member-select').selectedIndex = -1;
+
+            showResult(`✅ Created Privacy Group: ${groupName}\nMembers: ${selectedMembers.join(', ')}\nGroup Address: ${groupAddress}\nContract Address: ${contractAddress}`, 'success');
+        }
+
+        // Render privacy groups
+        function renderPrivacyGroups() {
+            const container = document.getElementById('privacy-groups-container');
+            container.innerHTML = '';
+
+            if (privacyGroups.length === 0) {
+                container.innerHTML = '<div class="privacy-group-card">No privacy groups created yet</div>';
+                return;
+            }
+
+            privacyGroups.forEach(group => {
+                const groupCard = document.createElement('div');
+                groupCard.className = 'privacy-group-card';
+                groupCard.innerHTML = `
+                    <div class="privacy-group-header">
+                        <span class="group-name">${group.name}</span>
+                        <button class="btn btn-danger" onclick="deleteGroup('${group.name}')">🗑️</button>
+                    </div>
+                    <div class="member-badges">
+                        ${group.members.map(member => {
+                            const [nodeId, eoaName] = member.split(':');
+                            return `<span class="member-badge">${eoaName}</span>`;
+                        }).join('')}
+                    </div>
+                    <div class="address-display">Contract: ${group.contractAddress}</div>
+                `;
+                container.appendChild(groupCard);
+            });
+        }
+
+        // Delete privacy group
+        function deleteGroup(groupName) {
+            if (confirm(`Are you sure you want to delete ${groupName}?`)) {
+                privacyGroups = privacyGroups.filter(g => g.name !== groupName);
+                renderPrivacyGroups();
+                updateGroupSelects();
+                showResult(`🗑️ Deleted Privacy Group: ${groupName}`, 'success');
+            }
+        }
+
+        // Update group selects
+        function updateGroupSelects() {
+            const select = document.getElementById('interaction-group-select');
+            select.innerHTML = '<option value="">Select Privacy Group</option>';
+
+            privacyGroups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.name;
+                option.textContent = group.name;
+                select.appendChild(option);
+            });
+        }
+
+        // Update EOA select based on selected group
+        function updateEOASelect() {
+            const groupName = document.getElementById('interaction-group-select').value;
+            const select = document.getElementById('interaction-eoa-select');
+            select.innerHTML = '<option value="">Select EOA</option>';
+
+            // Get all EOAs from all nodes for selection
+            nodes.forEach(node => {
+                node.eoas.forEach(eoa => {
+                    const option = document.createElement('option');
+                    option.value = `${eoa.nodeId}:${eoa.name}`;
+                    option.textContent = `${eoa.name} (${node.name})`;
+                    select.appendChild(option);
+                });
+            });
+
+            // Update group info
+            updateGroupInfo(groupName);
+        }
+
+        // Update group information display
+        function updateGroupInfo(groupName) {
+            const infoBox = document.getElementById('group-info-box');
+            
+            if (!groupName) {
+                infoBox.textContent = 'Select a privacy group to see its details...';
+                infoBox.className = 'result-box';
+                return;
+            }
+
+            const group = privacyGroups.find(g => g.name === groupName);
+            if (!group) return;
+
+            const memberDetails = group.members.map(member => {
+                const [nodeId, eoaName] = member.split(':');
+                const node = nodes.find(n => n.id === nodeId);
+                const eoa = node.eoas.find(e => e.name === eoaName);
+                return `• ${eoaName} (${node.name}): ${eoa.address}`;
+            }).join('\n');
+
+            infoBox.innerHTML = `
+<strong>📊 Group: ${group.name}</strong>
+<strong>🏗️ Group Address:</strong> ${group.address}
+<strong>📝 Contract Address:</strong> ${group.contractAddress}
+<strong>🆔 Group ID:</strong> ${group.groupId}
+<strong>👥 Members (${group.members.length}):</strong>
+${memberDetails}
+<strong>📅 Created:</strong> ${group.created.toLocaleString()}
+            `;
+            infoBox.className = 'result-box success-result';
+        }
+
+        // Write to contract
+        async function writeContract() {
+            const groupName = document.getElementById('interaction-group-select').value;
+            const eoaValue = document.getElementById('interaction-eoa-select').value;
+            const storeValue = document.getElementById('store-value').value;
+
+            if (!groupName || !eoaValue || !storeValue) {
+                alert('Please select privacy group, EOA, and enter a value to store');
+                return;
+            }
+
+            const [nodeId, eoaName] = eoaValue.split(':');
+            const group = privacyGroups.find(g => g.name === groupName);
+            const node = nodes.find(n => n.id === nodeId);
+            const eoa = node.eoas.find(e => e.name === eoaName);
+
+            showResult('📤 Writing to contract...', 'loading');
+
+            // Simulate contract interaction
+            setTimeout(() => {
+                const isMember = group.members.includes(eoaValue);
+                const isSameNode = group.members.some(member => {
+                    const [memberNodeId] = member.split(':');
+                    return memberNodeId === nodeId;
+                });
+
+                let result;
+                let resultClass;
+
+                if (isMember) {
+                    // Authorized member
+                    result = `✅ WRITE SUCCESS (${eoaName})
+📝 Stored value: ${storeValue}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+✨ Status: AUTHORIZED MEMBER`;
+                    resultClass = 'success';
+                } else if (isSameNode) {
+                    // Same node, but not member (node-level access)
+                    result = `⚠️ WRITE SUCCESS (${eoaName}) - NODE LEVEL ACCESS
+📝 Stored value: ${storeValue}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+⚠️ Status: NOT A MEMBER but same node access granted
+💡 This shows Paladin's node-level privacy behavior`;
+                    resultClass = 'success';
+                } else {
+                    // Different node
+                    result = `❌ WRITE FAILED (${eoaName})
+🚫 Error: Privacy group '${group.groupId}' not found
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+❌ Status: BLOCKED - Different node, no access
+✅ This is expected behavior`;
+                    resultClass = 'error';
+                }
+
+                showResult(result, resultClass);
+            }, 1000);
+        }
+
+        // Read from contract
+        async function readContract() {
+            const groupName = document.getElementById('interaction-group-select').value;
+            const eoaValue = document.getElementById('interaction-eoa-select').value;
+
+            if (!groupName || !eoaValue) {
+                alert('Please select privacy group and EOA');
+                return;
+            }
+
+            const [nodeId, eoaName] = eoaValue.split(':');
+            const group = privacyGroups.find(g => g.name === groupName);
+            const node = nodes.find(n => n.id === nodeId);
+            const eoa = node.eoas.find(e => e.name === eoaName);
+
+            showResult('👁️ Reading from contract...', 'loading');
+
+            // Simulate contract interaction
+            setTimeout(() => {
+                const isMember = group.members.includes(eoaValue);
+                const isSameNode = group.members.some(member => {
+                    const [memberNodeId] = member.split(':');
+                    return memberNodeId === nodeId;
+                });
+
+                let result;
+                let resultClass;
+                const randomValue = Math.floor(Math.random() * 1000);
+
+                if (isMember) {
+                    // Authorized member
+                    result = `✅ READ SUCCESS (${eoaName})
+📖 Current value: ${randomValue}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+✨ Status: AUTHORIZED MEMBER`;
+                    resultClass = 'success';
+                } else if (isSameNode) {
+                    // Same node, but not member (node-level access)
+                    result = `⚠️ READ SUCCESS (${eoaName}) - NODE LEVEL ACCESS
+📖 Current value: ${randomValue}
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+⚠️ Status: NOT A MEMBER but same node access granted
+💡 This shows Paladin's node-level privacy behavior`;
+                    resultClass = 'success';
+                } else {
+                    // Different node
+                    result = `❌ READ FAILED (${eoaName})
+🚫 Error: Privacy group '${group.groupId}' not found
+🔐 Privacy Group: ${groupName}
+🏗️ Node: ${node.name}
+👤 EOA: ${eoa.address}
+❌ Status: BLOCKED - Different node, no access
+✅ This is expected behavior`;
+                    resultClass = 'error';
+                }
+
+                showResult(result, resultClass);
+            }, 800);
+        }
+
+        // Show result in the result box
+        function showResult(message, type) {
+            const resultBox = document.getElementById('result-box');
+            resultBox.textContent = message;
+            
+            resultBox.className = 'result-box';
+            if (type === 'success') {
+                resultBox.className += ' success-result';
+            } else if (type === 'error') {
+                resultBox.className += ' error-result';
+            } else if (type === 'loading') {
+                resultBox.className += ' loading';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('interaction-group-select').addEventListener('change', updateEOASelect);
+
+        // Initialize playground on page load
+        document.addEventListener('DOMContentLoaded', initializePlayground);
+    </script>
+</body>
+</html>

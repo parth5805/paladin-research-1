@@ -1,0 +1,117 @@
+parth@Parths-MacBook-Pro production-lending-platform % node real-paladin-ui-backend.js
+🚀 Starting REAL Paladin UI Backend Server...
+
+
+🌐 REAL Paladin UI Backend running at http://localhost:3002
+📖 Open http://localhost:3002 in your browser
+
+🔗 This uses the EXACT SAME code as infrastructure-solution-individual-fixed_SIMPLIFIED.js
+   ✅ Same PaladinClient connections
+   ✅ Same verifier creation
+   ✅ Same privacy group deployment
+   ✅ Same contract interactions
+   ✅ Same test results
+
+🚀 SIMPLIFIED INDIVIDUAL IDENTITY ISOLATION DEMO
+===============================================
+
+✅ Connected to Node 1
+✅ Connected to Node 2
+✅ Connected to Node 3
+
+🔐 Wallets created:
+   EOA1: individual_eoa1_unique@node1 -> 0x4a57ba1d0f37b3d0333a04d8522bf28330b1915c
+   EOA2: individual_eoa2_unique@node1 -> 0xab70dcdb823cf0b2a8b953f5a344adb90deeafd2
+   EOA3: individual_eoa3_unique@node2 -> 0x330da3c0f1d7ebab153449778467fa1a9d11622c
+   EOA4: individual_eoa4_unique@node2 -> 0x9a1d2742004501553c639f35226ad9b141d7619c
+   EOA5: individual_eoa5_unique@node3 -> 0x2f4e3bd8df183db8efd8d85af8aa44497b4fa6af
+   EOA6: individual_eoa6_unique@node3 -> 0x8f5389766f78d424d41a379130e6a5084aa138b0
+
+🏗️ Creating privacy groups...
+🏗️ Creating GROUP1 with members: EOA1, EOA3
+✅ GROUP1 created with contract: 0xc3b41a3935f1c35577e42c8bc167130739b042f8
+
+🏗️ Creating GROUP2 with members: EOA1, EOA4
+✅ GROUP2 created with contract: 0xc3b41a3935f1c35577e42c8bc167130739b042f8
+
+📝 Running all tests...
+📝 TEST 1: GROUP1 (EOA1, EOA3 authorized)
+=========================================
+🔍 Testing EOA1 on GROUP1:
+   Expected: AUTHORIZED
+   ✅ WRITE 100 - SUCCESS (Expected)
+   ✅ READ 100 - SUCCESS (Expected) - Values Match: TRUE
+
+🔍 Testing EOA2 on GROUP1:
+   Expected: BLOCKED
+   ❌ WRITE 101 - SUCCESS (Should have failed!)
+   ❌ READ 101 - SUCCESS (Should have failed!) - Values Match: FALSE
+
+🔍 Testing EOA3 on GROUP1:
+   Expected: AUTHORIZED
+   ✅ WRITE 102 - SUCCESS (Expected)
+   ✅ READ 102 - SUCCESS (Expected) - Values Match: TRUE
+
+🔍 Testing EOA4 on GROUP1:
+   Expected: BLOCKED
+   ❌ WRITE 103 - SUCCESS (Should have failed!)
+   ❌ READ 103 - SUCCESS (Should have failed!) - Values Match: FALSE
+
+🔍 Testing EOA5 on GROUP1:
+   Expected: BLOCKED
+JSON-RPC error from pgroup_sendTransaction (500 Internal Server Error) PD012502: Privacy group '0xe6d83460fc5955eddbf36fd00f8c4951f82f936a76c6da1865f47717f77cf2f1' not found
+   ✅ WRITE 104 - FAILED (Expected: Request failed with status code 500)
+JSON-RPC error from pgroup_call (500 Internal Server Error) PD012502: Privacy group '0xe6d83460fc5955eddbf36fd00f8c4951f82f936a76c6da1865f47717f77cf2f1' not found
+   ✅ READ - FAILED (Expected: Request failed with status code 500) - Values Match: FALSE
+
+🔍 Testing EOA6 on GROUP1:
+   Expected: BLOCKED
+JSON-RPC error from pgroup_sendTransaction (500 Internal Server Error) PD012502: Privacy group '0xe6d83460fc5955eddbf36fd00f8c4951f82f936a76c6da1865f47717f77cf2f1' not found
+   ✅ WRITE 105 - FAILED (Expected: Request failed with status code 500)
+JSON-RPC error from pgroup_call (500 Internal Server Error) PD012502: Privacy group '0xe6d83460fc5955eddbf36fd00f8c4951f82f936a76c6da1865f47717f77cf2f1' not found
+   ✅ READ - FAILED (Expected: Request failed with status code 500) - Values Match: FALSE
+
+📝 TEST 2: GROUP2 (EOA1, EOA4 authorized)
+=========================================
+🔍 Testing EOA1 on GROUP2:
+   Expected: AUTHORIZED
+   ✅ WRITE 200 - SUCCESS (Expected)
+   ✅ READ 200 - SUCCESS (Expected) - Values Match: TRUE
+
+🔍 Testing EOA2 on GROUP2:
+   Expected: BLOCKED
+   ❌ WRITE 201 - SUCCESS (Should have failed!)
+   ❌ READ 201 - SUCCESS (Should have failed!) - Values Match: FALSE
+
+🔍 Testing EOA3 on GROUP2:
+   Expected: BLOCKED
+   ❌ WRITE 202 - SUCCESS (Should have failed!)
+   ❌ READ 202 - SUCCESS (Should have failed!) - Values Match: FALSE
+
+🔍 Testing EOA4 on GROUP2:
+   Expected: AUTHORIZED
+   ✅ WRITE 203 - SUCCESS (Expected)
+   ✅ READ 203 - SUCCESS (Expected) - Values Match: TRUE
+
+🔍 Testing EOA5 on GROUP2:
+   Expected: BLOCKED
+JSON-RPC error from pgroup_sendTransaction (500 Internal Server Error) PD012502: Privacy group '0x0712448aa1a1ad94b52a297a6fcdf0d3ec6319401219e1b4d95addf5db0cad0c' not found
+   ✅ WRITE 204 - FAILED (Expected: Request failed with status code 500)
+JSON-RPC error from pgroup_call (500 Internal Server Error) PD012502: Privacy group '0x0712448aa1a1ad94b52a297a6fcdf0d3ec6319401219e1b4d95addf5db0cad0c' not found
+   ✅ READ - FAILED (Expected: Request failed with status code 500) - Values Match: FALSE
+
+🔍 Testing EOA6 on GROUP2:
+   Expected: BLOCKED
+JSON-RPC error from pgroup_sendTransaction (500 Internal Server Error) PD012502: Privacy group '0x0712448aa1a1ad94b52a297a6fcdf0d3ec6319401219e1b4d95addf5db0cad0c' not found
+   ✅ WRITE 205 - FAILED (Expected: Request failed with status code 500)
+JSON-RPC error from pgroup_call (500 Internal Server Error) PD012502: Privacy group '0x0712448aa1a1ad94b52a297a6fcdf0d3ec6319401219e1b4d95addf5db0cad0c' not found
+   ✅ READ - FAILED (Expected: Request failed with status code 500) - Values Match: FALSE
+
+🎯 CURRENT STATUS - ANALYSIS:
+============================
+🔍 Testing privacy group access controls across nodes
+🔍 Checking individual identity isolation
+💡 Privacy groups created on specific nodes - cross-node access varies
+📋 Individual identity enforcement depends on privacy group configuration
+
+🎯 CONCLUSION: Privacy enforcement varies by node configuration and group membership
