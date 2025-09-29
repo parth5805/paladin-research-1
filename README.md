@@ -54,3 +54,7 @@ for contributing to Linux Foundation Decentralized Trust projects.
 If you're looking for somewhere to help, you can begin by looking through
 [open issues](https://github.com/LF-Decentralized-Trust-labs/paladin/issues), or join
 the conversation on [Discord](https://discord.com/channels/905194001349627914/1303371167020879903).
+
+### Resource Links
+https://www.notion.so/Paladin-Research-2755ad2c83f1800bae59c3eee918c1fa?source=copy_link
+https://www.notion.so/HSM-BESU-2785ad2c83f18091bdb9f9affbd8802a?source=copy_link
